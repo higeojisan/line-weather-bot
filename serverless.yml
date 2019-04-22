@@ -14,3 +14,10 @@ functions:
       - http:
           path: weather-bot/input
           method: post
+
+package:
+  include:
+    - handler.rb         
+
+plugins:
+  - serverless-ruby-package
