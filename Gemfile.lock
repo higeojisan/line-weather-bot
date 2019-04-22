@@ -1,13 +1,22 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    ansi (1.5.0)
+    ast (2.4.0)
     line-bot-api (1.9.0)
+    oga (2.15)
+      ast
+      ruby-ll (~> 2.1)
+    ruby-ll (2.1.2)
+      ansi
+      ast
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   line-bot-api
+  oga
 
 BUNDLED WITH
    2.0.1
