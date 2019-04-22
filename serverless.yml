@@ -6,6 +6,9 @@ provider:
   region: ap-northeast-1
   memorySize: 128
   timeout: 30
+  environment:
+    LINE_CHANNEL_SECRET: ${env:LINE_CHANNEL_SECRET}
+    LINE_CHANNEL_TOKEN: ${env:LINE_CHANNEL_TOKEN}
 
 functions:
   input:
