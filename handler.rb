@@ -55,12 +55,47 @@ def input(event:, context:)
             text: "一致する地域が見つかりませんでした。\n都道府県名を入力してください。"
           }
         else
+          ## ボタンテンプレートのアクションの最大数は4
+          ## https://developers.line.biz/ja/reference/messaging-api/#buttons
+          ## TODO: カルーセルテンプレートで複数カラムにしたら回避可能
+          ## とりあえずは4つ以上の地域でも4つまでにしてボタンテンプレートを使う
+          citys = []
+          xml.xpath("/rss/channel/ldWeather:source/pref[contains(@title, '#{prefecture}')]/city").each do |city|
+            citys.push(city.get('title'))
+          end
+          actions = []
+          count = 0
+          citys.each do |city|
+            break if count > 3
+            action = {
+              type: "postback",
+              label: "#{city}",
+              data: "#{city}"
+            }
+            actions.push(action)
+            count += 1
+          end
           message = {
-            type: 'text',
-            text: '確認テンプレートを出す'
+            "type": "template",
+            "altText": "This is a buttons template",
+            "template": {
+                "type": "buttons",
+                "title": "地域設定",
+                "text": "近い地域を選んでね",
+                "defaultAction": {
+                    "type": "postback",
+                    "label": "View detail",
+                    "data": "default"
+                }
+            }
           }
+          message[:template][:actions] = actions
+          p message
         end
 
+        ## TODO: 例外処理を追加する
+        ## https://easyramble.com/fix-ruby-net-http-bad-code.html
+        ## https://docs.ruby-lang.org/ja/latest/class/Net=3a=3aHTTPResponse.html
         response = client.reply_message(event['replyToken'], message)
         p response
       end
