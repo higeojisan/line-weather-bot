@@ -61,7 +61,10 @@ def input(event:, context:)
           ## とりあえずは4つ以上の地域でも4つまでにしてボタンテンプレートを使う
           citys = []
           xml.xpath("/rss/channel/ldWeather:source/pref[contains(@title, '#{prefecture}')]/city").each do |city|
-            citys.push(city.get('title'))
+            temp = {}
+            temp[:name] = (city.get('title'))
+            temp[:id] = (city.get('id'))
+            citys.push(temp)
           end
           actions = []
           count = 0
@@ -69,8 +72,8 @@ def input(event:, context:)
             break if count > 3
             action = {
               type: "postback",
-              label: "#{city}",
-              data: "#{city}"
+              label: "#{city[:name]}",
+              data: "#{city[:id]}"
             }
             actions.push(action)
             count += 1
@@ -99,6 +102,14 @@ def input(event:, context:)
         response = client.reply_message(event['replyToken'], message)
         p response
       end
+    when Line::Bot::Event::Postback
+      postback_data = event['postback']['data']
+      message = {
+        type: 'text',
+        text: "city_id: #{postback_data}"
+      }
+      response = client.reply_message(event['replyToken'], message)
+      p response
     end
   }
 end
