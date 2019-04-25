@@ -5,6 +5,9 @@ require 'line/bot'
 require 'logger'
 require 'open-uri'
 require 'oga'
+require 'aws-sdk'
+require 'digest/sha2'
+require 'tempfile'
 
 def input(event:, context:)
   logger = Logger.new(STDOUT)
@@ -103,11 +106,25 @@ def input(event:, context:)
         p response
       end
     when Line::Bot::Event::Postback
-      postback_data = event['postback']['data']
+      ## user_idとcity_idの取得
+      city_id = event['postback']['data'].to_i
+      user_id = event['source']['userId'].to_s
+
+      ## 取得したuser_idとcity_idをS3に保存
+      ## 念のためuser_idは暗号化して保存
+      ## user_id, city_idのCSV形式で保存する
+      digested_user_id = Digest::SHA256.hexdigest("#{city_id}")
+      Tempfile.open {|t|
+        t.puts('user_id,city_id')
+        t.puts("#{digested_user_id},#{city_id}")
+      }
+      s3_client = Aws::S3::Client.new
+
       message = {
         type: 'text',
-        text: "city_id: #{postback_data}"
+        text: "city_id: #{city_id}\nuser_id: #{user_id}"
       }
+
       response = client.reply_message(event['replyToken'], message)
       p response
     end

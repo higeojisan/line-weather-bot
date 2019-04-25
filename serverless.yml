@@ -1,5 +1,8 @@
 service: line-weather-bot
 
+custom:
+  bucket: line-weather-bot-user-information
+
 provider:
   name: aws
   runtime: ruby2.5
@@ -10,6 +13,11 @@ provider:
     LINE_CHANNEL_SECRET: ${env:LINE_CHANNEL_SECRET}
     LINE_CHANNEL_TOKEN: ${env:LINE_CHANNEL_TOKEN}
     LIVEDOOR_PRIMARY_AREA_RSS: http://weather.livedoor.com/forecast/rss/primary_area.xml
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: "*"
 
 functions:
   input:
@@ -18,6 +26,19 @@ functions:
       - http:
           path: weather-bot/input
           method: post
+
+resources:
+  Resources:
+    userInformationBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucket}
+        AccessControl: Private
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: True
+          BlockPublicPolicy: True
+          IgnorePublicAcls: True
+          RestrictPublicBuckets: True
 
 package:
   include:
