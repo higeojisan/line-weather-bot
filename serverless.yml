@@ -14,6 +14,7 @@ provider:
     LINE_CHANNEL_TOKEN: ${env:LINE_CHANNEL_TOKEN}
     LIVEDOOR_PRIMARY_AREA_RSS: http://weather.livedoor.com/forecast/rss/primary_area.xml
     USER_INFO_BUCKET: ${self:custom.bucket}
+    MY_LINE_USER_ID: ${env:MY_LINE_USER_ID}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -27,6 +28,8 @@ functions:
       - http:
           path: weather-bot/input
           method: post
+  pushWeatherInfo:
+    handler: push.weather_info
 
 resources:
   Resources:
@@ -43,7 +46,8 @@ resources:
 
 package:
   include:
-    - handler.rb         
+    - handler.rb
+    - push.rb        
 
 plugins:
   - serverless-ruby-package
