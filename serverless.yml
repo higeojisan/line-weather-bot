@@ -13,6 +13,7 @@ provider:
     LINE_CHANNEL_SECRET: ${env:LINE_CHANNEL_SECRET}
     LINE_CHANNEL_TOKEN: ${env:LINE_CHANNEL_TOKEN}
     LIVEDOOR_PRIMARY_AREA_RSS: http://weather.livedoor.com/forecast/rss/primary_area.xml
+    USER_INFO_BUCKET: ${self:custom.bucket}
   iamRoleStatements:
     - Effect: Allow
       Action:

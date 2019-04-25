@@ -113,12 +113,21 @@ def input(event:, context:)
       ## 取得したuser_idとcity_idをS3に保存
       ## 念のためuser_idは暗号化して保存
       ## user_id, city_idのCSV形式で保存する
-      digested_user_id = Digest::SHA256.hexdigest("#{city_id}")
-      Tempfile.open {|t|
-        t.puts('user_id,city_id')
+      ## https://qiita.com/k5trismegistus/items/00bb6bb579b6f5e040c6
+      digested_user_id = Digest::SHA256.hexdigest("#{user_id}")
+      temp_file = Tempfile.open {|t|
+        t.puts('digested_user_id,city_id')
         t.puts("#{digested_user_id},#{city_id}")
+        t
       }
+      temp_file_path = temp_file.path
       s3_client = Aws::S3::Client.new
+      resp = s3_client.put_object({
+        body: File.open("#{temp_file_path}"),
+        bucket: "#{ENV['USER_INFO_BUCKET']}",
+        key: "#{digested_user_id}_info.csv",
+      })
+      p resp
 
       message = {
         type: 'text',
