@@ -107,8 +107,8 @@ def input(event:, context:)
       end
     when Line::Bot::Event::Postback
       ## user_idとcity_idの取得
-      city_id = event['postback']['data'].to_i
-      user_id = event['source']['userId'].to_s
+      city_id = event['postback']['data']
+      user_id = event['source']['userId']
 
       ## 取得したuser_idとcity_idをS3に保存
       ## user_id, city_idのCSV形式で保存する※user_idをハッシュ化するとpushの際に戻せないのでハッシュ化しない
