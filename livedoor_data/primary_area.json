@@ -1,0 +1,570 @@
+{
+  "011000": {
+    "city_name": "稚内",
+    "pref_name": "道北"
+  },
+  "012010": {
+    "city_name": "旭川",
+    "pref_name": "道北"
+  },
+  "012020": {
+    "city_name": "留萌",
+    "pref_name": "道北"
+  },
+  "013010": {
+    "city_name": "網走",
+    "pref_name": "道東"
+  },
+  "013020": {
+    "city_name": "北見",
+    "pref_name": "道東"
+  },
+  "013030": {
+    "city_name": "紋別",
+    "pref_name": "道東"
+  },
+  "014010": {
+    "city_name": "根室",
+    "pref_name": "道東"
+  },
+  "014020": {
+    "city_name": "釧路",
+    "pref_name": "道東"
+  },
+  "014030": {
+    "city_name": "帯広",
+    "pref_name": "道東"
+  },
+  "015010": {
+    "city_name": "室蘭",
+    "pref_name": "道南"
+  },
+  "015020": {
+    "city_name": "浦河",
+    "pref_name": "道南"
+  },
+  "017010": {
+    "city_name": "函館",
+    "pref_name": "道南"
+  },
+  "017020": {
+    "city_name": "江差",
+    "pref_name": "道南"
+  },
+  "016010": {
+    "city_name": "札幌",
+    "pref_name": "道央"
+  },
+  "016020": {
+    "city_name": "岩見沢",
+    "pref_name": "道央"
+  },
+  "016030": {
+    "city_name": "倶知安",
+    "pref_name": "道央"
+  },
+  "020010": {
+    "city_name": "青森",
+    "pref_name": "青森県"
+  },
+  "020020": {
+    "city_name": "むつ",
+    "pref_name": "青森県"
+  },
+  "020030": {
+    "city_name": "八戸",
+    "pref_name": "青森県"
+  },
+  "030010": {
+    "city_name": "盛岡",
+    "pref_name": "岩手県"
+  },
+  "030020": {
+    "city_name": "宮古",
+    "pref_name": "岩手県"
+  },
+  "030030": {
+    "city_name": "大船渡",
+    "pref_name": "岩手県"
+  },
+  "040010": {
+    "city_name": "仙台",
+    "pref_name": "宮城県"
+  },
+  "040020": {
+    "city_name": "白石",
+    "pref_name": "宮城県"
+  },
+  "050010": {
+    "city_name": "秋田",
+    "pref_name": "秋田県"
+  },
+  "050020": {
+    "city_name": "横手",
+    "pref_name": "秋田県"
+  },
+  "060010": {
+    "city_name": "山形",
+    "pref_name": "山形県"
+  },
+  "060020": {
+    "city_name": "米沢",
+    "pref_name": "山形県"
+  },
+  "060030": {
+    "city_name": "酒田",
+    "pref_name": "山形県"
+  },
+  "060040": {
+    "city_name": "新庄",
+    "pref_name": "山形県"
+  },
+  "070010": {
+    "city_name": "福島",
+    "pref_name": "福島県"
+  },
+  "070020": {
+    "city_name": "小名浜",
+    "pref_name": "福島県"
+  },
+  "070030": {
+    "city_name": "若松",
+    "pref_name": "福島県"
+  },
+  "080010": {
+    "city_name": "水戸",
+    "pref_name": "茨城県"
+  },
+  "080020": {
+    "city_name": "土浦",
+    "pref_name": "茨城県"
+  },
+  "090010": {
+    "city_name": "宇都宮",
+    "pref_name": "栃木県"
+  },
+  "090020": {
+    "city_name": "大田原",
+    "pref_name": "栃木県"
+  },
+  "100010": {
+    "city_name": "前橋",
+    "pref_name": "群馬県"
+  },
+  "100020": {
+    "city_name": "みなかみ",
+    "pref_name": "群馬県"
+  },
+  "110010": {
+    "city_name": "さいたま",
+    "pref_name": "埼玉県"
+  },
+  "110020": {
+    "city_name": "熊谷",
+    "pref_name": "埼玉県"
+  },
+  "110030": {
+    "city_name": "秩父",
+    "pref_name": "埼玉県"
+  },
+  "120010": {
+    "city_name": "千葉",
+    "pref_name": "千葉県"
+  },
+  "120020": {
+    "city_name": "銚子",
+    "pref_name": "千葉県"
+  },
+  "120030": {
+    "city_name": "館山",
+    "pref_name": "千葉県"
+  },
+  "130010": {
+    "city_name": "東京",
+    "pref_name": "東京都"
+  },
+  "130020": {
+    "city_name": "大島",
+    "pref_name": "東京都"
+  },
+  "130030": {
+    "city_name": "八丈島",
+    "pref_name": "東京都"
+  },
+  "130040": {
+    "city_name": "父島",
+    "pref_name": "東京都"
+  },
+  "140010": {
+    "city_name": "横浜",
+    "pref_name": "神奈川県"
+  },
+  "140020": {
+    "city_name": "小田原",
+    "pref_name": "神奈川県"
+  },
+  "150010": {
+    "city_name": "新潟",
+    "pref_name": "新潟県"
+  },
+  "150020": {
+    "city_name": "長岡",
+    "pref_name": "新潟県"
+  },
+  "150030": {
+    "city_name": "高田",
+    "pref_name": "新潟県"
+  },
+  "150040": {
+    "city_name": "相川",
+    "pref_name": "新潟県"
+  },
+  "160010": {
+    "city_name": "富山",
+    "pref_name": "富山県"
+  },
+  "160020": {
+    "city_name": "伏木",
+    "pref_name": "富山県"
+  },
+  "170010": {
+    "city_name": "金沢",
+    "pref_name": "石川県"
+  },
+  "170020": {
+    "city_name": "輪島",
+    "pref_name": "石川県"
+  },
+  "180010": {
+    "city_name": "福井",
+    "pref_name": "福井県"
+  },
+  "180020": {
+    "city_name": "敦賀",
+    "pref_name": "福井県"
+  },
+  "190010": {
+    "city_name": "甲府",
+    "pref_name": "山梨県"
+  },
+  "190020": {
+    "city_name": "河口湖",
+    "pref_name": "山梨県"
+  },
+  "200010": {
+    "city_name": "長野",
+    "pref_name": "長野県"
+  },
+  "200020": {
+    "city_name": "松本",
+    "pref_name": "長野県"
+  },
+  "200030": {
+    "city_name": "飯田",
+    "pref_name": "長野県"
+  },
+  "210010": {
+    "city_name": "岐阜",
+    "pref_name": "岐阜県"
+  },
+  "210020": {
+    "city_name": "高山",
+    "pref_name": "岐阜県"
+  },
+  "220010": {
+    "city_name": "静岡",
+    "pref_name": "静岡県"
+  },
+  "220020": {
+    "city_name": "網代",
+    "pref_name": "静岡県"
+  },
+  "220030": {
+    "city_name": "三島",
+    "pref_name": "静岡県"
+  },
+  "220040": {
+    "city_name": "浜松",
+    "pref_name": "静岡県"
+  },
+  "230010": {
+    "city_name": "名古屋",
+    "pref_name": "愛知県"
+  },
+  "230020": {
+    "city_name": "豊橋",
+    "pref_name": "愛知県"
+  },
+  "240010": {
+    "city_name": "津",
+    "pref_name": "三重県"
+  },
+  "240020": {
+    "city_name": "尾鷲",
+    "pref_name": "三重県"
+  },
+  "250010": {
+    "city_name": "大津",
+    "pref_name": "滋賀県"
+  },
+  "250020": {
+    "city_name": "彦根",
+    "pref_name": "滋賀県"
+  },
+  "260010": {
+    "city_name": "京都",
+    "pref_name": "京都府"
+  },
+  "260020": {
+    "city_name": "舞鶴",
+    "pref_name": "京都府"
+  },
+  "270000": {
+    "city_name": "大阪",
+    "pref_name": "大阪府"
+  },
+  "280010": {
+    "city_name": "神戸",
+    "pref_name": "兵庫県"
+  },
+  "280020": {
+    "city_name": "豊岡",
+    "pref_name": "兵庫県"
+  },
+  "290010": {
+    "city_name": "奈良",
+    "pref_name": "奈良県"
+  },
+  "290020": {
+    "city_name": "風屋",
+    "pref_name": "奈良県"
+  },
+  "300010": {
+    "city_name": "和歌山",
+    "pref_name": "和歌山県"
+  },
+  "300020": {
+    "city_name": "潮岬",
+    "pref_name": "和歌山県"
+  },
+  "310010": {
+    "city_name": "鳥取",
+    "pref_name": "鳥取県"
+  },
+  "310020": {
+    "city_name": "米子",
+    "pref_name": "鳥取県"
+  },
+  "320010": {
+    "city_name": "松江",
+    "pref_name": "島根県"
+  },
+  "320020": {
+    "city_name": "浜田",
+    "pref_name": "島根県"
+  },
+  "320030": {
+    "city_name": "西郷",
+    "pref_name": "島根県"
+  },
+  "330010": {
+    "city_name": "岡山",
+    "pref_name": "岡山県"
+  },
+  "330020": {
+    "city_name": "津山",
+    "pref_name": "岡山県"
+  },
+  "340010": {
+    "city_name": "広島",
+    "pref_name": "広島県"
+  },
+  "340020": {
+    "city_name": "庄原",
+    "pref_name": "広島県"
+  },
+  "350010": {
+    "city_name": "下関",
+    "pref_name": "山口県"
+  },
+  "350020": {
+    "city_name": "山口",
+    "pref_name": "山口県"
+  },
+  "350030": {
+    "city_name": "柳井",
+    "pref_name": "山口県"
+  },
+  "350040": {
+    "city_name": "萩",
+    "pref_name": "山口県"
+  },
+  "360010": {
+    "city_name": "徳島",
+    "pref_name": "徳島県"
+  },
+  "360020": {
+    "city_name": "日和佐",
+    "pref_name": "徳島県"
+  },
+  "370000": {
+    "city_name": "高松",
+    "pref_name": "香川県"
+  },
+  "380010": {
+    "city_name": "松山",
+    "pref_name": "愛媛県"
+  },
+  "380020": {
+    "city_name": "新居浜",
+    "pref_name": "愛媛県"
+  },
+  "380030": {
+    "city_name": "宇和島",
+    "pref_name": "愛媛県"
+  },
+  "390010": {
+    "city_name": "高知",
+    "pref_name": "高知県"
+  },
+  "390020": {
+    "city_name": "室戸岬",
+    "pref_name": "高知県"
+  },
+  "390030": {
+    "city_name": "清水",
+    "pref_name": "高知県"
+  },
+  "400010": {
+    "city_name": "福岡",
+    "pref_name": "福岡県"
+  },
+  "400020": {
+    "city_name": "八幡",
+    "pref_name": "福岡県"
+  },
+  "400030": {
+    "city_name": "飯塚",
+    "pref_name": "福岡県"
+  },
+  "400040": {
+    "city_name": "久留米",
+    "pref_name": "福岡県"
+  },
+  "410010": {
+    "city_name": "佐賀",
+    "pref_name": "佐賀県"
+  },
+  "410020": {
+    "city_name": "伊万里",
+    "pref_name": "佐賀県"
+  },
+  "420010": {
+    "city_name": "長崎",
+    "pref_name": "長崎県"
+  },
+  "420020": {
+    "city_name": "佐世保",
+    "pref_name": "長崎県"
+  },
+  "420030": {
+    "city_name": "厳原",
+    "pref_name": "長崎県"
+  },
+  "420040": {
+    "city_name": "福江",
+    "pref_name": "長崎県"
+  },
+  "430010": {
+    "city_name": "熊本",
+    "pref_name": "熊本県"
+  },
+  "430020": {
+    "city_name": "阿蘇乙姫",
+    "pref_name": "熊本県"
+  },
+  "430030": {
+    "city_name": "牛深",
+    "pref_name": "熊本県"
+  },
+  "430040": {
+    "city_name": "人吉",
+    "pref_name": "熊本県"
+  },
+  "440010": {
+    "city_name": "大分",
+    "pref_name": "大分県"
+  },
+  "440020": {
+    "city_name": "中津",
+    "pref_name": "大分県"
+  },
+  "440030": {
+    "city_name": "日田",
+    "pref_name": "大分県"
+  },
+  "440040": {
+    "city_name": "佐伯",
+    "pref_name": "大分県"
+  },
+  "450010": {
+    "city_name": "宮崎",
+    "pref_name": "宮崎県"
+  },
+  "450020": {
+    "city_name": "延岡",
+    "pref_name": "宮崎県"
+  },
+  "450030": {
+    "city_name": "都城",
+    "pref_name": "宮崎県"
+  },
+  "450040": {
+    "city_name": "高千穂",
+    "pref_name": "宮崎県"
+  },
+  "460010": {
+    "city_name": "鹿児島",
+    "pref_name": "鹿児島県"
+  },
+  "460020": {
+    "city_name": "鹿屋",
+    "pref_name": "鹿児島県"
+  },
+  "460030": {
+    "city_name": "種子島",
+    "pref_name": "鹿児島県"
+  },
+  "460040": {
+    "city_name": "名瀬",
+    "pref_name": "鹿児島県"
+  },
+  "471010": {
+    "city_name": "那覇",
+    "pref_name": "沖縄県"
+  },
+  "471020": {
+    "city_name": "名護",
+    "pref_name": "沖縄県"
+  },
+  "471030": {
+    "city_name": "久米島",
+    "pref_name": "沖縄県"
+  },
+  "472000": {
+    "city_name": "南大東",
+    "pref_name": "沖縄県"
+  },
+  "473000": {
+    "city_name": "宮古島",
+    "pref_name": "沖縄県"
+  },
+  "474010": {
+    "city_name": "石垣島",
+    "pref_name": "沖縄県"
+  },
+  "474020": {
+    "city_name": "与那国島",
+    "pref_name": "沖縄県"
+  }
+}
