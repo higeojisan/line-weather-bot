@@ -111,13 +111,14 @@ def input(event:, context:)
       user_id = event['source']['userId'].to_s
 
       ## 取得したuser_idとcity_idをS3に保存
-      ## 念のためuser_idは暗号化して保存
-      ## user_id, city_idのCSV形式で保存する
+      ## user_id, city_idのCSV形式で保存する※user_idをハッシュ化するとpushの際に戻せないのでハッシュ化しない
+      ## その代わりS3のSSE-KSMで暗号化して保存する※バケットレベルで設定する
       ## https://qiita.com/k5trismegistus/items/00bb6bb579b6f5e040c6
+      ## pushの時にS3 Selectを使う前提ならユーザーごとのファイルに分けないで1つのファイルに追記する方がいい
       digested_user_id = Digest::SHA256.hexdigest("#{user_id}")
       temp_file = Tempfile.open {|t|
-        t.puts('digested_user_id,city_id')
-        t.puts("#{digested_user_id},#{city_id}")
+        t.puts('user_id,city_id')
+        t.puts("#{user_id},#{city_id}")
         t
       }
       temp_file_path = temp_file.path
@@ -127,6 +128,8 @@ def input(event:, context:)
         bucket: "#{ENV['USER_INFO_BUCKET']}",
         key: "#{digested_user_id}_info.csv",
       })
+      ## TODO: ファイルが正常にアップロードされたか確認する
+      ## https://docs.aws.amazon.com/ja_jp/sdk-for-ruby/v3/developer-guide/s3-example-create-buckets.html
       p resp
 
       message = {
