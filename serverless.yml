@@ -43,6 +43,10 @@ resources:
           BlockPublicPolicy: True
           IgnorePublicAcls: True
           RestrictPublicBuckets: True
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: aws:kms
 
 package:
   include:
