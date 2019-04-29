@@ -65,7 +65,6 @@ def input(event:, context:)
         
         prefectures = get_prefectures_from_livedoor_rss(rss)
         reply_error_message(client, event['replyToken']) if prefectures.empty?
-        xml = Oga.parse_xml(rss)
           
         ## 入力(prefecture)がRSSから取得したものと一致するか比較する
         ## 一致しない：やり直し
@@ -87,8 +86,6 @@ def input(event:, context:)
             prefecture = '東京都'
           when '大阪', '京都'
             prefecture = user_input + '府'
-          when '道北', '道東', '道南', '道央'
-            prefecture = user_input
           else
             prefecture = user_input + '県'
           end 
@@ -98,13 +95,7 @@ def input(event:, context:)
 
         if prefectures.include?(prefecture)
           ## 一致する都道府県名が見つかった場合
-          citys = []
-          xml.xpath("/rss/channel/ldWeather:source/pref[contains(@title, '#{prefecture}')]/city").each do |city|
-            temp = {}
-            temp[:name] = (city.get('title'))
-            temp[:id] = (city.get('id'))
-            citys.push(temp)
-          end
+          citys = get_city_ids_from_livedoor_rss(rss, prefecture)
           actions = []
           count = 0
           citys.each do |city|
