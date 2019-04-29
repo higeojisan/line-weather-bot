@@ -15,8 +15,6 @@ LIVEDOOR_JSON_FILE='livedoor_data/primary_area.json'
 def input(event:, context:)
   logger = Logger.new(STDOUT)
 
-  p event
-
   ## クライアントの作成
   client = Line::Bot::Client.new { |config|
     config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
