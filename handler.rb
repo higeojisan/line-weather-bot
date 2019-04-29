@@ -58,34 +58,46 @@ def input(event:, context:)
         end
 
         ## 地域登録時の処理
-        prefecture = event.message['text']
+        user_input = event.message['text']
 
         rss = get_xml_from_livedoor_rss()
         reply_error_message(client, event['replyToken']) if rss.nil?          
         
         prefectures = get_prefectures_from_livedoor_rss(rss)
         reply_error_message(client, event['replyToken']) if prefectures.empty?
-                  
+        xml = Oga.parse_xml(rss)
+          
         ## 入力(prefecture)がRSSから取得したものと一致するか比較する
         ## 一致しない：やり直し
         ## 一致する：地域をサジェストする
-        ## ["道北", "道東", "道南", "道央", "道南", "青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県", "茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県", "新潟県", "富山県", "石川県", "福井県", "山梨県", "長野県", "岐阜県", "静岡県", "愛知県", "三重県", "滋賀県", "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県", "鳥取県", "島根県", "岡山県", "広島県", "山口県", "徳島県", "香川県", "愛媛県", "高知県", "福岡県", "佐賀県", "長崎県", "熊本県", "大分県", "宮崎県", "鹿児島県", "沖縄県"]
-        ## 北海道は特別扱い
-        if prefecture === '北海道'
+        ## TODO: 北海道は未対応(https://github.com/higeojisan/line-weather-bot/issues/2)
+        if user_input === '北海道'
           message = {
             type: 'text',
-            text: '北海道の方は"道北", "道東", "道南", "道央", "道南"のいずれかを入力してください'
+            text: "北海道の方は使えません。\nごめんなさい。"
           }
-        elsif prefectures.grep(/^#{prefecture}/).empty? ## TODO: grepだと福だけ入力したら福島もしくは福井が引っかかってしまう...ので修正
-          message = {
-            type: 'text',
-            text: "一致する地域が見つかりませんでした。\n都道府県名を入力してください。"
-          }
+          response = client.reply_message(event['replyToken'], message)
+          p response
+        end
+
+        ## ユーザーの入力の整形
+        unless user_input.match(/^.+[都県府]$/)
+          case user_input
+          when '東京'
+            prefecture = '東京都'
+          when '大阪', '京都'
+            prefecture = user_input + '府'
+          when '道北', '道東', '道南', '道央'
+            prefecture = user_input
+          else
+            prefecture = user_input + '県'
+          end 
         else
-          ## ボタンテンプレートのアクションの最大数は4
-          ## https://developers.line.biz/ja/reference/messaging-api/#buttons
-          ## TODO: カルーセルテンプレートで複数カラムにしたら回避可能
-          ## とりあえずは4つ以上の地域でも4つまでにしてボタンテンプレートを使う
+          prefecture = user_input
+        end
+
+        if prefectures.include?(prefecture)
+          ## 一致する都道府県名が見つかった場合
           citys = []
           xml.xpath("/rss/channel/ldWeather:source/pref[contains(@title, '#{prefecture}')]/city").each do |city|
             temp = {}
@@ -120,14 +132,20 @@ def input(event:, context:)
             }
           }
           message[:template][:actions] = actions
-          p message
+          response = client.reply_message(event['replyToken'], message)
+          p response
+          return
+        else
+          ## 一致する都道府県名が見つからなかった場合
+          message = {
+            type: 'text',
+            text: "一致する地域が見つかりませんでした。\n都道府県名を入力してください。"
+          }
+          response = client.reply_message(event['replyToken'], message)
+          p response
+          return
         end
 
-        ## TODO: 例外処理を追加する
-        ## https://easyramble.com/fix-ruby-net-http-bad-code.html
-        ## https://docs.ruby-lang.org/ja/latest/class/Net=3a=3aHTTPResponse.html
-        response = client.reply_message(event['replyToken'], message)
-        p response
       end
     when Line::Bot::Event::Postback
       ## user_idとcity_idの取得
