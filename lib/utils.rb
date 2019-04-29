@@ -3,6 +3,7 @@ load "vendor/bundle/bundler/setup.rb"
 require 'logger'
 require 'json'
 require 'open-uri'
+require 'oga'
 
 def get_user_id_and_city_id_from_s3_obj(s3_client = Aws::S3::Client.new, s3_bucket_name = "", s3_object_key = "")
   result = []
@@ -18,6 +19,13 @@ def get_user_id_and_city_id_from_s3_obj(s3_client = Aws::S3::Client.new, s3_buck
     result.push(row['user_id'],row['city_id'])
   end
   result
+end
+
+def reply_error_message(line_client, reply_token)
+  message = { type: 'text', text: "エラーが発生しました。\n時間をおいて再度試してください。" }
+  resp = line_client.reply_message(reply_token, message)
+  p resp
+  return
 end
 
 ## TODO: 取得と整形の分離
@@ -58,4 +66,13 @@ def get_xml_from_livedoor_rss()
     logger.fatal("failed to connect #{url}: #{e.message}")
     nil
   end
+end
+
+def get_prefectures_from_livedoor_rss(rss)
+  prefectures = []
+  xml = Oga.parse_xml(rss)
+  xml.xpath('/rss/channel/ldWeather:source/pref').each do |pref|
+    prefectures.push(pref.get('title'))
+  end
+  prefectures
 end
