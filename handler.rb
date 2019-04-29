@@ -1,4 +1,5 @@
 load "vendor/bundle/bundler/setup.rb"
+$LOAD_PATH.unshift("./lib/")
 
 require 'json'
 require 'line/bot'
@@ -9,6 +10,7 @@ require 'aws-sdk'
 require 'digest/sha2'
 require 'tempfile'
 require 'csv'
+require 'utils'
 
 LIVEDOOR_JSON_FILE='livedoor_data/primary_area.json'
 
@@ -190,27 +192,4 @@ def input(event:, context:)
       p response
     end
   }
-end
-
-def getPrimaryAreaRSS(line_bot_client, replyToken)
-  logger = Logger.new(STDOUT)
-
-  charset = nil
-  url = ENV['LIVEDOOR_PRIMARY_AREA_RSS']
-
-  begin
-    xml = open(url) do |f|
-      charset = f.charset
-      f.read
-    end
-  rescue => e
-    logger.fatal("failed to connect #{url}: #{e.message}")
-    message = {
-      type: 'text',
-      text: 'やり直してください'
-    }
-    line_bot_client.reply_message(replyToken, message)
-  end
-
-  xml
 end

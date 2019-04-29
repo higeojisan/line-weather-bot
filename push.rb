@@ -1,10 +1,12 @@
 load "vendor/bundle/bundler/setup.rb"
+$LOAD_PATH.unshift("./lib/")
 
 require 'json'
 require 'line/bot'
 require 'aws-sdk'
 require 'csv'
 require 'jsonclient'
+require 'utils'
 
 def weather_info(event:, context:)
   ## クライアントの作成
@@ -31,35 +33,4 @@ def weather_info(event:, context:)
     }
     line_bot_client.push_message(user_id, message)
   end
-end
-
-def get_user_id_and_city_id_from_s3_obj(s3_client = Aws::S3::Client.new, s3_bucket_name = "", s3_object_key = "")
-  result = []
-  resp = s3_client.get_object(bucket: s3_bucket_name, key: s3_object_key)
-  s3_object_content = resp.body.read
-  CSV.parse(s3_object_content, headers: true) do |row|
-    result.push(row['user_id'],row['city_id'])
-  end
-  result
-end
-
-def get_weather_info_from_city_id(city_id)
-  client = JSONClient.new
-  res = client.get("http://weather.livedoor.com/forecast/webservice/json/v1?city=#{city_id}")
-  return "情報が取得出来ませんでした" unless res.status == 200
-  body = res.body.to_h
-  forecasts = body['forecasts']
-  result = "明日の天気\n\n"
-  link = body['link']
-  forecasts.each do |forecast|
-    if forecast['dateLabel'] == '明日'
-      result += forecast['telop'] + "\n\n"
-      max_temp = forecast['temperature']['max']['celsius']
-      min_temp = forecast['temperature']['min']['celsius']
-      result += "最高気温: #{max_temp}" + "\n"
-      result += "最低気温: #{min_temp}" + "\n"
-      result += "\n" + link
-    end
-  end
-  result
 end
