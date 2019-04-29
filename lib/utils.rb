@@ -28,6 +28,37 @@ def reply_error_message(line_client, reply_token)
   return
 end
 
+def city_select_template(citys)
+  actions = []
+  count = 0
+  citys.each do |city|
+    break if count > 3 ## ボタンテンプレートは最大4アクションまでという制限のため
+    action = {
+      type: "postback",
+      label: "#{city[:name]}",
+      data: "#{city[:id]}"
+    }
+    actions.push(action)
+    count += 1
+  end
+  message = {
+    "type": "template",
+    "altText": "This is a buttons template",
+    "template": {
+      "type": "buttons",
+      "title": "地域設定",
+      "text": "近い地域を選んでね",
+      "defaultAction": {
+        "type": "postback",
+        "label": "View detail",
+        "data": "default"
+      }
+    }
+  }
+  message[:template][:actions] = actions
+  message
+end
+
 ## TODO: 取得と整形の分離
 def get_weather_info_from_city_id(city_id)
   client = JSONClient.new

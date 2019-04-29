@@ -96,33 +96,7 @@ def input(event:, context:)
         if prefectures.include?(prefecture)
           ## 一致する都道府県名が見つかった場合
           citys = get_city_ids_from_livedoor_rss(rss, prefecture)
-          actions = []
-          count = 0
-          citys.each do |city|
-            break if count > 3
-            action = {
-              type: "postback",
-              label: "#{city[:name]}",
-              data: "#{city[:id]}"
-            }
-            actions.push(action)
-            count += 1
-          end
-          message = {
-            "type": "template",
-            "altText": "This is a buttons template",
-            "template": {
-                "type": "buttons",
-                "title": "地域設定",
-                "text": "近い地域を選んでね",
-                "defaultAction": {
-                    "type": "postback",
-                    "label": "View detail",
-                    "data": "default"
-                }
-            }
-          }
-          message[:template][:actions] = actions
+          message = city_select_template(citys)
           response = client.reply_message(event['replyToken'], message)
           p response
           return
