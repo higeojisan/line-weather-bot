@@ -35,7 +35,7 @@ def input(event:, context:)
     when Line::Bot::Event::Message
       case event.type
       when Line::Bot::Event::MessageType::Text
-        
+
         ## リッチメニューで設定確認をタップされた時の処理
         if event.message['text'] == '設定地域の確認'
           ## user_idを取得してその人のcity_idを取得する
@@ -56,10 +56,16 @@ def input(event:, context:)
           return
         end
 
+        ## 地域登録時の処理
         prefecture = event.message['text']
-        
-        ## LIVEDOORのRSSを取得
-        rss = getPrimaryAreaRSS(client, event['replyToken'])
+        rss = get_xml_from_livedoor_rss()
+        if rss.nil?
+          message = { type: 'text', text: "エラーが発生しました。\n時間をおいて再度試してください。" }
+          resp = client.reply_message(event['replyToken'], message)
+          p resp
+          return
+        end
+          
         
         ## LIVEDOORのRSSから都道府県名(<pref title="沖縄">)を取得する
         prefectures = []

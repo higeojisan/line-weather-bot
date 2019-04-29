@@ -1,3 +1,9 @@
+load "vendor/bundle/bundler/setup.rb"
+
+require 'logger'
+require 'json'
+require 'open-uri'
+
 def get_user_id_and_city_id_from_s3_obj(s3_client = Aws::S3::Client.new, s3_bucket_name = "", s3_object_key = "")
   result = []
   begin
@@ -36,26 +42,20 @@ def get_weather_info_from_city_id(city_id)
   result
 end
 
-## TODO: RSSの取得とメッセージの送信の分離
-def getPrimaryAreaRSS(line_bot_client, replyToken)
+def get_xml_from_livedoor_rss()
   logger = Logger.new(STDOUT)
 
   charset = nil
   url = ENV['LIVEDOOR_PRIMARY_AREA_RSS']
 
   begin
-    xml = open(url) do |f|
+    xml = open(url, {:redirect => false}) do |f|
       charset = f.charset
       f.read
     end
+    xml
   rescue => e
     logger.fatal("failed to connect #{url}: #{e.message}")
-    message = {
-      type: 'text',
-      text: 'やり直してください'
-    }
-    line_bot_client.reply_message(replyToken, message)
+    nil
   end
-
-  xml
 end
