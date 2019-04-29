@@ -1,6 +1,12 @@
 def get_user_id_and_city_id_from_s3_obj(s3_client = Aws::S3::Client.new, s3_bucket_name = "", s3_object_key = "")
   result = []
-  resp = s3_client.get_object(bucket: s3_bucket_name, key: s3_object_key)
+  begin
+    resp = s3_client.get_object(bucket: s3_bucket_name, key: s3_object_key)
+  rescue Aws::S3::Errors::NoSuchKey => e
+    puts e.message
+    puts "#{s3_object_key} does not exist in #{s3_bucket_name}."
+    return
+  end
   s3_object_content = resp.body.read
   CSV.parse(s3_object_content, headers: true) do |row|
     result.push(row['user_id'],row['city_id'])
