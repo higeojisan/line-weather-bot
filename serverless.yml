@@ -51,7 +51,8 @@ resources:
 package:
   include:
     - handler.rb
-    - push.rb        
+    - push.rb
+    - livedoor_data/*        
 
 plugins:
   - serverless-ruby-package
