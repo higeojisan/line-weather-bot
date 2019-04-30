@@ -58,8 +58,6 @@ def input(event:, context:)
         end
 
         ## 地域登録時の処理
-        user_input = event.message['text']
-
         rss = get_xml_from_livedoor_rss()
         reply_error_message(client, event['replyToken']) if rss.nil?          
         
@@ -70,7 +68,7 @@ def input(event:, context:)
         ## 一致しない：やり直し
         ## 一致する：地域をサジェストする
         ## TODO: 北海道は未対応(https://github.com/higeojisan/line-weather-bot/issues/2)
-        if user_input === '北海道'
+        if event.message['text'] === '北海道'
           message = {
             type: 'text',
             text: "北海道の方は使えません。\nごめんなさい。"
@@ -80,18 +78,7 @@ def input(event:, context:)
         end
 
         ## ユーザーの入力の整形
-        unless user_input.match(/^.+[都県府]$/)
-          case user_input
-          when '東京'
-            prefecture = '東京都'
-          when '大阪', '京都'
-            prefecture = user_input + '府'
-          else
-            prefecture = user_input + '県'
-          end 
-        else
-          prefecture = user_input
-        end
+        prefecture = get_prefecture_name(event.message['text'])
 
         if prefectures.include?(prefecture)
           ## 一致する都道府県名が見つかった場合

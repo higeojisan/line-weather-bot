@@ -136,3 +136,20 @@ def get_city_ids_from_livedoor_rss(rss, prefecture)
   end
   citys
 end
+
+## 都県府が未入力の場合、都県府を付与する
+## TODO: 都道府県名は限られているのでホワイトリストで厳密にチェックした方が良さそう...
+def get_prefecture_name(user_input)
+  unless user_input.match(/^.+[都県府]$/)
+    case user_input
+    when '東京'
+      prefecture = '東京都'
+    when '大阪', '京都'
+      prefecture = user_input + '府'
+    else
+      prefecture = user_input + '県'
+    end 
+  else
+    prefecture = user_input
+  end
+end
