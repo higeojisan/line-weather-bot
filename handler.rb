@@ -117,35 +117,17 @@ def input(event:, context:)
       city_id = event['postback']['data']
       user_id = event['source']['userId']
 
-      ## 取得したuser_idとcity_idをS3に保存
-      ## user_id, city_idのCSV形式で保存する※user_idをハッシュ化するとpushの際に戻せないのでハッシュ化しない
-      ## その代わりS3のSSE-KSMで暗号化して保存する※バケットレベルで設定する
-      ## https://qiita.com/k5trismegistus/items/00bb6bb579b6f5e040c6
-      ## pushの時にS3 Selectを使う前提ならユーザーごとのファイルに分けないで1つのファイルに追記する方がいい
-      digested_user_id = Digest::SHA256.hexdigest("#{user_id}")
-      temp_file = Tempfile.open {|t|
-        t.puts('user_id,city_id')
-        t.puts("#{user_id},#{city_id}")
-        t
-      }
-      temp_file_path = temp_file.path
-      s3_client = Aws::S3::Client.new
-      resp = s3_client.put_object({
-        body: File.open("#{temp_file_path}"),
-        bucket: "#{ENV['USER_INFO_BUCKET']}",
-        key: "#{digested_user_id}_info.csv",
-      })
-      ## TODO: ファイルが正常にアップロードされたか確認する
-      ## https://docs.aws.amazon.com/ja_jp/sdk-for-ruby/v3/developer-guide/s3-example-create-buckets.html
-      p resp
+      ## s3にuser_idとcity_idを書き込む
+      write_user_data_to_s3(user_id, city_id)
 
+      ## ユーザーに完了メッセージを送る
       message = {
         type: 'text',
-        text: "city_id: #{city_id}\nuser_id: #{user_id}"
+        text: "地域の設定が完了しました。\n毎日22:00に天気予報をお届けします。"
       }
-
       response = client.reply_message(event['replyToken'], message)
       p response
+      return
     end
   }
 end
