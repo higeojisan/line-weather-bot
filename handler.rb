@@ -99,13 +99,16 @@ def input(event:, context:)
         end
 
       end
+
     when Line::Bot::Event::Postback
-      ## user_idとcity_idの取得
+    
+      ## s3にuser_idとcity_idを書き込む
       city_id = event['postback']['data']
       user_id = event['source']['userId']
-
-      ## s3にuser_idとcity_idを書き込む
-      write_user_data_to_s3(user_id, city_id)
+      if false == write_user_data_to_s3(user_id, city_id)
+        reply_error_message(client, event['replyToken']) 
+        return
+      end
 
       ## ユーザーに完了メッセージを送る
       message = {

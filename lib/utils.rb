@@ -5,8 +5,6 @@ require 'json'
 require 'open-uri'
 require 'oga'
 
-## TODO: ファイルが正常にアップロードされたかの確認を追加する
-## https://docs.aws.amazon.com/ja_jp/sdk-for-ruby/v3/developer-guide/s3-example-create-buckets.html
 def write_user_data_to_s3(user_id, city_id)
   digested_user_id = Digest::SHA256.hexdigest("#{user_id}")
   temp_file = Tempfile.open {|t|
@@ -15,11 +13,14 @@ def write_user_data_to_s3(user_id, city_id)
     t
   }
   s3_client = Aws::S3::Client.new
-  resp = s3_client.put_object({
+  s3_client.put_object({
     body: File.open("#{temp_file.path}"),
     bucket: "#{ENV['USER_INFO_BUCKET']}",
     key: "#{digested_user_id}_info.csv",
   })
+  s3_client.get_object(bucket: ENV['USER_INFO_BUCKET'], key: "#{digested_user_id}_info.csv")
+rescue => error
+  return false
 end
   
 def get_user_id_and_city_id_from_s3_obj(s3_client = Aws::S3::Client.new, s3_bucket_name = "", s3_object_key = "")
@@ -38,11 +39,12 @@ def get_user_id_and_city_id_from_s3_obj(s3_client = Aws::S3::Client.new, s3_buck
   result
 end
 
+## TODO:ここでreturn返しても意味ないかも...
+## Lambdaのhandler関数の中でreturnしないとLambdaが終わらず複数回送信することに...
 def reply_error_message(line_client, reply_token)
   message = { type: 'text', text: "エラーが発生しました。\n時間をおいて再度試してください。" }
   resp = line_client.reply_message(reply_token, message)
   p resp
-  return
 end
 
 def city_select_template(citys)
