@@ -30,7 +30,7 @@ def get_user_id_and_city_id_from_s3_obj(s3_client = Aws::S3::Client.new, s3_buck
   rescue Aws::S3::Errors::NoSuchKey => e
     puts e.message
     puts "#{s3_object_key} does not exist in #{s3_bucket_name}."
-    return
+    return false
   end
   s3_object_content = resp.body.read
   CSV.parse(s3_object_content, headers: true) do |row|
@@ -41,7 +41,7 @@ end
 
 ## TODO:ここでreturn返しても意味ないかも...
 ## Lambdaのhandler関数の中でreturnしないとLambdaが終わらず複数回送信することに...
-def reply_error_message(line_client, reply_token)
+def reply_server_error_message(line_client, reply_token)
   message = { type: 'text', text: "エラーが発生しました。\n時間をおいて再度試してください。" }
   resp = line_client.reply_message(reply_token, message)
   p resp

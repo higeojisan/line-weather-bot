@@ -40,6 +40,13 @@ def input(event:, context:)
           digested_user_id = Digest::SHA256.hexdigest("#{event['source']['userId']}")
           s3_client = Aws::S3::Client.new
           user_id, city_id = get_user_id_and_city_id_from_s3_obj(s3_client, ENV["USER_INFO_BUCKET"], "#{digested_user_id}_info.csv")
+          ## ユーザー情報が見つからなかった場合にエラーメッセージを送る
+          if false == user_id
+            message = { type: 'text', text: "設定地域の登録が済んでないようです。\n天気予報を受け取りたい地域の設定を行ってください。" }
+            response = client.reply_message(event['replyToken'], message)
+            p response
+            return
+          end
           if user_id == event['source']['userId']
             File.open(LIVEDOOR_JSON_FILE) do |file|
               city_hash = JSON.load(file)["#{city_id}"]
@@ -54,9 +61,9 @@ def input(event:, context:)
           return
         else
           rss = get_xml_from_livedoor_rss()
-          reply_error_message(client, event['replyToken']) if rss.nil?          
+          reply_server_error_message(client, event['replyToken']) if rss.nil?          
           prefectures = get_prefectures_from_livedoor_rss(rss)
-          reply_error_message(client, event['replyToken']) if prefectures.empty?
+          reply_server_error_message(client, event['replyToken']) if prefectures.empty?
           ## TODO: 北海道は未対応(https://github.com/higeojisan/line-weather-bot/issues/2)
           if event.message['text'] === '北海道'
             message = {
@@ -92,7 +99,7 @@ def input(event:, context:)
       city_id = event['postback']['data']
       user_id = event['source']['userId']
       if false == write_user_data_to_s3(user_id, city_id)
-        reply_error_message(client, event['replyToken']) 
+        reply_server_error_message(client, event['replyToken']) 
         return
       end
 
