@@ -16,18 +16,18 @@ def input(event:, context:)
   logger = Logger.new(STDOUT)
 
   ## クライアントの作成
-  client = Line::Bot::Client.new { |config|
+  line_bot_client = Line::Bot::Client.new { |config|
     config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
     config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
   }
 
   ## 署名の検証
-  unless client.validate_signature(event["body"], event["headers"]["X-Line-Signature"])
+  unless line_bot_client.validate_signature(event["body"], event["headers"]["X-Line-Signature"])
     logger.fatal("failed to validate signature.") 
     return 0
   end
   
-  events = client.parse_events_from(event["body"])
+  events = line_bot_client.parse_events_from(event["body"])
   events.each { |event|
     case event
     when Line::Bot::Event::Message
@@ -41,7 +41,7 @@ def input(event:, context:)
           ## ユーザー情報が見つからなかった場合にエラーメッセージを送る
           if false == user_id
             message = { type: 'text', text: "設定地域の登録が済んでないようです。\n天気予報を受け取りたい地域の設定を行ってください。" }
-            response = client.reply_message(event['replyToken'], message)
+            response = line_bot_client.reply_message(event['replyToken'], message)
             p response
             return
           end
@@ -51,23 +51,23 @@ def input(event:, context:)
               type: 'text',
               text: "あなたの設定地域は\n#{city_name}(#{pref_name})だよ"
             }
-            response = client.reply_message(event['replyToken'], message)
+            response = line_bot_client.reply_message(event['replyToken'], message)
             p response
             return
           end
           return
         else
           rss = get_xml_from_livedoor_rss()
-          reply_server_error_message(client, event['replyToken']) if rss.nil?          
+          reply_server_error_message(line_bot_client, event['replyToken']) if rss.nil?          
           prefectures = get_prefectures_from_livedoor_rss(rss)
-          reply_server_error_message(client, event['replyToken']) if prefectures.empty?
+          reply_server_error_message(line_bot_client, event['replyToken']) if prefectures.empty?
           ## TODO: 北海道は未対応(https://github.com/higeojisan/line-weather-bot/issues/2)
           if event.message['text'] === '北海道'
             message = {
               type: 'text',
               text: "北海道の方は使えません。\nごめんなさい。"
             }
-            response = client.reply_message(event['replyToken'], message)
+            response = line_bot_client.reply_message(event['replyToken'], message)
             p response
           end
 
@@ -76,7 +76,7 @@ def input(event:, context:)
           if prefectures.include?(prefecture)
             citys = get_city_ids_from_livedoor_rss(rss, prefecture)
             message = city_select_template(citys)
-            response = client.reply_message(event['replyToken'], message)
+            response = line_bot_client.reply_message(event['replyToken'], message)
             p response
             return
           else
@@ -84,7 +84,7 @@ def input(event:, context:)
               type: 'text',
               text: "一致する地域が見つかりませんでした。\n都道府県名を入力してください。"
             }
-            response = client.reply_message(event['replyToken'], message)
+            response = line_bot_client.reply_message(event['replyToken'], message)
             p response
             return
           end
@@ -96,7 +96,7 @@ def input(event:, context:)
       city_id = event['postback']['data']
       user_id = event['source']['userId']
       if false == write_user_data_to_s3(user_id, city_id)
-        reply_server_error_message(client, event['replyToken']) 
+        reply_server_error_message(line_bot_client, event['replyToken']) 
         return
       end
 
@@ -105,7 +105,7 @@ def input(event:, context:)
         type: 'text',
         text: "地域の設定が完了しました。\n毎日22:00に天気予報をお届けします。"
       }
-      response = client.reply_message(event['replyToken'], message)
+      response = line_bot_client.reply_message(event['replyToken'], message)
       p response
       return
     end
