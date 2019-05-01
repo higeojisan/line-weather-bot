@@ -12,6 +12,15 @@ require 'tempfile'
 require 'csv'
 require 'utils'
 
+PREFECTURES = [
+  '青森', '岩手県', '宮城県', '秋田県', '山形県', '福島県', '茨城県', '栃木県', '群馬県',
+  '埼玉県', '千葉県', '東京都', '神奈川県', '新潟県', '富山県', '石川県', '福井県', '山梨県',
+  '長野県', '岐阜県', '静岡県', '愛知県', '三重県', '滋賀県', '京都府', '大阪府', '兵庫県',
+  '奈良県', '和歌山県', '鳥取県', '島根県', '岡山県', '広島県', '山口県', '徳島県', '香川県',
+  '愛媛県', '高知県', '福岡県', '佐賀県', '長崎県', '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県'
+]
+LIVEDOOR_PRIMARY_AREA_XML_FILE='livedoor_data/primary_area.xml'
+
 def input(event:, context:)
   logger = Logger.new(STDOUT)
 
@@ -36,7 +45,7 @@ def input(event:, context:)
         case event.message['text']
         when '設定地域の確認'
           digested_user_id = Digest::SHA256.hexdigest("#{event['source']['userId']}")
-          s3_client = Aws::S3::Client.new　
+          s3_client = Aws::S3::Client.new
           user_id, city_id = get_user_id_and_city_id_from_s3_obj(s3_client, ENV["USER_INFO_BUCKET"], "#{digested_user_id}_info.csv")
           ## ユーザー情報が見つからなかった場合にエラーメッセージを送る
           if false == user_id
@@ -57,10 +66,6 @@ def input(event:, context:)
           end
           return
         else
-          rss = get_xml_from_livedoor_rss()
-          reply_server_error_message(line_bot_client, event['replyToken']) if rss.nil?          
-          prefectures = get_prefectures_from_livedoor_rss(rss)
-          reply_server_error_message(line_bot_client, event['replyToken']) if prefectures.empty?
           ## TODO: 北海道は未対応(https://github.com/higeojisan/line-weather-bot/issues/2)
           if event.message['text'] === '北海道'
             message = {
@@ -69,12 +74,12 @@ def input(event:, context:)
             }
             response = line_bot_client.reply_message(event['replyToken'], message)
             p response
+            return
           end
 
           prefecture = get_prefecture_name(event.message['text'])
-
-          if prefectures.include?(prefecture)
-            citys = get_city_ids_from_livedoor_rss(rss, prefecture)
+          if PREFECTURES.include?(prefecture)
+            citys = get_city_ids_from_livedoor_rss(File.read(LIVEDOOR_PRIMARY_AREA_XML_FILE), prefecture)
             message = city_select_template(citys)
             response = line_bot_client.reply_message(event['replyToken'], message)
             p response
