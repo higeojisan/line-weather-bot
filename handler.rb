@@ -35,11 +35,8 @@ def input(event:, context:)
     when Line::Bot::Event::Message
       case event.type
       when Line::Bot::Event::MessageType::Text
-
-        ## case文で分けた方がわかりやすい気がする...
-        ## リッチメニューで設定確認をタップされた時の処理
-        if event.message['text'] == '設定地域の確認'
-          ## user_idを取得してその人のcity_idを取得する
+        case event.message['text']
+        when '設定地域の確認'
           digested_user_id = Digest::SHA256.hexdigest("#{event['source']['userId']}")
           s3_client = Aws::S3::Client.new
           user_id, city_id = get_user_id_and_city_id_from_s3_obj(s3_client, ENV["USER_INFO_BUCKET"], "#{digested_user_id}_info.csv")
@@ -55,51 +52,40 @@ def input(event:, context:)
             end
           end
           return
-        end
-
-        ## 地域登録時の処理
-        rss = get_xml_from_livedoor_rss()
-        reply_error_message(client, event['replyToken']) if rss.nil?          
-        
-        prefectures = get_prefectures_from_livedoor_rss(rss)
-        reply_error_message(client, event['replyToken']) if prefectures.empty?
-          
-        ## 入力(prefecture)がRSSから取得したものと一致するか比較する
-        ## 一致しない：やり直し
-        ## 一致する：地域をサジェストする
-        ## TODO: 北海道は未対応(https://github.com/higeojisan/line-weather-bot/issues/2)
-        if event.message['text'] === '北海道'
-          message = {
-            type: 'text',
-            text: "北海道の方は使えません。\nごめんなさい。"
-          }
-          response = client.reply_message(event['replyToken'], message)
-          p response
-        end
-
-        ## ユーザーの入力の整形
-        prefecture = get_prefecture_name(event.message['text'])
-
-        if prefectures.include?(prefecture)
-          ## 一致する都道府県名が見つかった場合
-          citys = get_city_ids_from_livedoor_rss(rss, prefecture)
-          message = city_select_template(citys)
-          response = client.reply_message(event['replyToken'], message)
-          p response
-          return
         else
-          ## 一致する都道府県名が見つからなかった場合
-          message = {
-            type: 'text',
-            text: "一致する地域が見つかりませんでした。\n都道府県名を入力してください。"
-          }
-          response = client.reply_message(event['replyToken'], message)
-          p response
-          return
+          rss = get_xml_from_livedoor_rss()
+          reply_error_message(client, event['replyToken']) if rss.nil?          
+          prefectures = get_prefectures_from_livedoor_rss(rss)
+          reply_error_message(client, event['replyToken']) if prefectures.empty?
+          ## TODO: 北海道は未対応(https://github.com/higeojisan/line-weather-bot/issues/2)
+          if event.message['text'] === '北海道'
+            message = {
+              type: 'text',
+              text: "北海道の方は使えません。\nごめんなさい。"
+            }
+            response = client.reply_message(event['replyToken'], message)
+            p response
+          end
+
+          prefecture = get_prefecture_name(event.message['text'])
+
+          if prefectures.include?(prefecture)
+            citys = get_city_ids_from_livedoor_rss(rss, prefecture)
+            message = city_select_template(citys)
+            response = client.reply_message(event['replyToken'], message)
+            p response
+            return
+          else
+            message = {
+              type: 'text',
+              text: "一致する地域が見つかりませんでした。\n都道府県名を入力してください。"
+            }
+            response = client.reply_message(event['replyToken'], message)
+            p response
+            return
+          end
         end
-
       end
-
     when Line::Bot::Event::Postback
     
       ## s3にuser_idとcity_idを書き込む
