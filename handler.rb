@@ -12,8 +12,6 @@ require 'tempfile'
 require 'csv'
 require 'utils'
 
-LIVEDOOR_JSON_FILE='livedoor_data/primary_area.json'
-
 def input(event:, context:)
   logger = Logger.new(STDOUT)
 
@@ -38,7 +36,7 @@ def input(event:, context:)
         case event.message['text']
         when '設定地域の確認'
           digested_user_id = Digest::SHA256.hexdigest("#{event['source']['userId']}")
-          s3_client = Aws::S3::Client.new
+          s3_client = Aws::S3::Client.new　
           user_id, city_id = get_user_id_and_city_id_from_s3_obj(s3_client, ENV["USER_INFO_BUCKET"], "#{digested_user_id}_info.csv")
           ## ユーザー情報が見つからなかった場合にエラーメッセージを送る
           if false == user_id
@@ -48,15 +46,14 @@ def input(event:, context:)
             return
           end
           if user_id == event['source']['userId']
-            File.open(LIVEDOOR_JSON_FILE) do |file|
-              city_hash = JSON.load(file)["#{city_id}"]
-              message = {
-                type: 'text',
-                text: "あなたの設定地域は\n#{city_hash['city_name']}(#{city_hash['pref_name']})だよ"
-              }
-              response = client.reply_message(event['replyToken'], message)
-              p response
-            end
+            city_name, pref_name = get_city_name_and_pref_name(city_id)
+            message = {
+              type: 'text',
+              text: "あなたの設定地域は\n#{city_name}(#{pref_name})だよ"
+            }
+            response = client.reply_message(event['replyToken'], message)
+            p response
+            return
           end
           return
         else

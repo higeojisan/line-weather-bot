@@ -5,6 +5,8 @@ require 'json'
 require 'open-uri'
 require 'oga'
 
+LIVEDOOR_JSON_FILE='../livedoor_data/primary_area.json'
+
 def write_user_data_to_s3(user_id, city_id)
   digested_user_id = Digest::SHA256.hexdigest("#{user_id}")
   temp_file = Tempfile.open {|t|
@@ -154,4 +156,13 @@ def get_prefecture_name(user_input)
   else
     prefecture = user_input
   end
+end
+
+def get_city_name_and_pref_name(city_id)
+  result = []
+  File.open(LIVEDOOR_JSON_FILE) do |file|
+    city_hash = JSON.load(file)["#{city_id}"]
+    result << city_hash['city_name'] << city_hash['pref_name']
+  end
+  result
 end
