@@ -6,6 +6,7 @@ require 'open-uri'
 require 'oga'
 
 LIVEDOOR_JSON_FILE='../livedoor_data/primary_area.json'
+MAX_ACTION_NUM_FOR_BUTTON_TEMPLATE=4 ## ボタンテンプレートは最大4アクションまでというLINE Messaging API制限がある
 
 def write_user_data_to_s3(user_id, city_id)
   digested_user_id = Digest::SHA256.hexdigest("#{user_id}")
@@ -50,7 +51,7 @@ def reply_server_error_message(line_client, reply_token)
 end
 
 def city_select_template(citys)
-  actions = citys.take(4).map do |city| ## ボタンテンプレートは最大4アクションまでという制限のためtake(4)
+  actions = citys.take(MAX_ACTION_NUM_FOR_BUTTON_TEMPLATE).map do |city|
     action = {
       type: "postback",
       label: "#{city[:name]}",
