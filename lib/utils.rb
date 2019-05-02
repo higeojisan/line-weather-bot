@@ -50,17 +50,12 @@ def reply_server_error_message(line_client, reply_token)
 end
 
 def city_select_template(citys)
-  actions = []
-  count = 0
-  citys.each do |city|
-    break if count > 3 ## ボタンテンプレートは最大4アクションまでという制限のため
+  actions = citys.take(4).map do |city| ## ボタンテンプレートは最大4アクションまでという制限のためtake(4)
     action = {
       type: "postback",
       label: "#{city[:name]}",
       data: "#{city[:id]}"
     }
-    actions.push(action)
-    count += 1
   end
   message = {
     "type": "template",
