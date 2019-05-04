@@ -6,6 +6,7 @@ require 'open-uri'
 require 'oga'
 
 LIVEDOOR_JSON_FILE = File.expand_path '../livedoor_data/primary_area.json', File.dirname(__FILE__)
+LIVEDOOR_XML_FILE = File.expand_path '../livedoor_data/primary_area.xml', File.dirname(__FILE__)
 MAX_ACTION_NUM_FOR_BUTTON_TEMPLATE = 4 ## ボタンテンプレートは最大4アクションまでというLINE Messaging API制限がある
 
 def write_user_data_to_s3(user_id, city_id)
@@ -125,9 +126,9 @@ def get_prefectures_from_livedoor_rss(rss)
   prefectures
 end
 
-def get_city_ids_from_livedoor_rss(rss, prefecture)
+def get_city_ids_from_livedoor_rss(prefecture)
   citys = []
-  xml = Oga.parse_xml(rss)
+  xml = Oga.parse_xml(File.read(LIVEDOOR_XML_FILE))
   xml.xpath("/rss/channel/ldWeather:source/pref[contains(@title, '#{prefecture}')]/city").each do |city|
     temp = {}
     temp[:name] = (city.get('title'))
