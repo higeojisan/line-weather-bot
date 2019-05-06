@@ -4,7 +4,9 @@ require 'logger'
 require 'json'
 require 'open-uri'
 require 'oga'
+require 'jsonclient'
 
+LIVEDOOR_WEATHER_INFO_URL = 'http://weather.livedoor.com/forecast/webservice/json/v1'
 LIVEDOOR_JSON_FILE = File.expand_path '../livedoor_data/primary_area.json', File.dirname(__FILE__)
 LIVEDOOR_XML_FILE = File.expand_path '../livedoor_data/primary_area.xml', File.dirname(__FILE__)
 MAX_ACTION_NUM_FOR_BUTTON_TEMPLATE = 4 ## ボタンテンプレートは最大4アクションまでというLINE Messaging API制限がある
@@ -75,15 +77,20 @@ def city_select_template(citys)
   end
 end
 
-## TODO: 取得と整形の分離
 def get_weather_info_from_city_id(city_id)
   client = JSONClient.new
-  res = client.get("http://weather.livedoor.com/forecast/webservice/json/v1?city=#{city_id}")
-  return "情報が取得出来ませんでした" unless res.status == 200
-  body = res.body.to_h
-  forecasts = body['forecasts']
+  res = client.get("#{LIVEDOOR_WEATHER_INFO_URL}?city=#{city_id}")
+  if res.status == 200
+    res.body.to_h
+  else
+    {}
+  end
+end
+
+def format_weather_info(raw_weather_info)
+  forecasts = raw_weather_info['forecasts']
   result = "明日の天気\n\n"
-  link = body['link']
+  link = raw_weather_info['link']
   forecasts.each do |forecast|
     if forecast['dateLabel'] == '明日'
       result += forecast['telop'] + "\n\n"

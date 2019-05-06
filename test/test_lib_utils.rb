@@ -38,4 +38,12 @@ class UtilsTest < Minitest::Test
     ## 異常系(引数が空の配列の場合)
     assert_empty city_select_template([])
   end
+
+  def test_get_weather_info_from_city_id
+    ## 正常系(200が返ってきた場合)
+    refute_empty get_weather_info_from_city_id("011000")
+
+    ## 異常系(200以外が返ってきた場合)
+    assert_empty get_weather_info_from_city_id("9999999999")
+  end
 end
