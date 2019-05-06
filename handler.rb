@@ -79,7 +79,8 @@ def input(event:, context:)
           prefecture = get_prefecture_name(event.message['text'])
           if PREFECTURES.include?(prefecture)
             citys = get_city_ids_from_livedoor_rss(prefecture)
-            message = city_select_template(citys)
+            message = BUTTON_TEMPLATE_HASH
+            message[:template][:actions] = city_select_template(citys)
             response = line_bot_client.reply_message(event['replyToken'], message)
             p response
             return

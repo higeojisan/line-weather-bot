@@ -8,6 +8,20 @@ require 'oga'
 LIVEDOOR_JSON_FILE = File.expand_path '../livedoor_data/primary_area.json', File.dirname(__FILE__)
 LIVEDOOR_XML_FILE = File.expand_path '../livedoor_data/primary_area.xml', File.dirname(__FILE__)
 MAX_ACTION_NUM_FOR_BUTTON_TEMPLATE = 4 ## ボタンテンプレートは最大4アクションまでというLINE Messaging API制限がある
+BUTTON_TEMPLATE_HASH = {
+  "type": "template",
+  "altText": "This is a buttons template",
+  "template": {
+    "type": "buttons",
+    "title": "地域設定",
+    "text": "近い地域を選んでね",
+    "defaultAction": {
+      "type": "postback",
+      "label": "View detail",
+      "data": "default"
+    }
+  }
+}
 
 def write_user_data_to_s3(user_id, city_id)
   digested_user_id = Digest::SHA256.hexdigest("#{user_id}")
@@ -56,25 +70,9 @@ def city_select_template(citys)
     action = {
       type: "postback",
       label: "#{city[:name]}",
-      data: "#{city[:id]}"
+      data: "#{city[:id]}",
     }
   end
-  message = {
-    "type": "template",
-    "altText": "This is a buttons template",
-    "template": {
-      "type": "buttons",
-      "title": "地域設定",
-      "text": "近い地域を選んでね",
-      "defaultAction": {
-        "type": "postback",
-        "label": "View detail",
-        "data": "default"
-      }
-    }
-  }
-  message[:template][:actions] = actions
-  message
 end
 
 ## TODO: 取得と整形の分離
@@ -115,15 +113,6 @@ def get_xml_from_livedoor_rss()
     logger.fatal("failed to connect #{url}: #{e.message}")
     nil
   end
-end
-
-def get_prefectures_from_livedoor_rss(rss)
-  prefectures = []
-  xml = Oga.parse_xml(rss)
-  xml.xpath('/rss/channel/ldWeather:source/pref').each do |pref|
-    prefectures.push(pref.get('title'))
-  end
-  prefectures
 end
 
 def get_city_ids_from_livedoor_rss(prefecture)
