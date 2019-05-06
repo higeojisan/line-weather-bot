@@ -130,10 +130,7 @@ def get_city_ids_from_livedoor_rss(prefecture)
   citys = []
   xml = Oga.parse_xml(File.read(LIVEDOOR_XML_FILE))
   xml.xpath("/rss/channel/ldWeather:source/pref[contains(@title, '#{prefecture}')]/city").each do |city|
-    temp = {}
-    temp[:name] = (city.get('title'))
-    temp[:id] = (city.get('id'))
-    citys.push(temp)
+    citys.push({name: city.get('title'), id: city.get('id')})
   end
   citys
 end
