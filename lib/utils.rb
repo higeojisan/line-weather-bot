@@ -43,9 +43,8 @@ rescue => error
   return false
 end
 
-def get_user_id_and_city_id_from_s3_obj(user_id)
-  digested_user_id = Digest::SHA256.hexdigest(user_id)
-  s3_object_key = digested_user_id + "_info.csv"
+def get_user_id_and_city_id_from_s3_obj(user_id: nil, s3_object_key: nil)
+  s3_object_key = user_id != nil ? Digest::SHA256.hexdigest(user_id) + "_info.csv" : s3_object_key
   result = []
   begin
     s3_client = Aws::S3::Client.new
@@ -90,6 +89,7 @@ def get_weather_info_from_city_id(city_id)
   end
 end
 
+## TODO: temperatureがmin, maxがnilの場合の対応
 def format_weather_info(raw_weather_info)
   forecasts = raw_weather_info['forecasts']
   result = "明日の天気\n\n"
