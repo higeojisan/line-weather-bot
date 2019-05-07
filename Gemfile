@@ -10,3 +10,4 @@ gem "pry"
 gem "httpclient"
 gem "minitest"
 gem "minitest-reporters"
+gem 'rubocop', '~> 0.68.1', require: false
