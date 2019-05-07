@@ -19,7 +19,6 @@ def weather_info(event:, context:)
   s3_client = Aws::S3::Client.new
   list_objects_resp = s3_client.list_objects_v2(bucket: ENV['USER_INFO_BUCKET'])
   list_objects_resp.contents.each do |s3_object|
-
     ## ファイルからuser_idとcity_idを取得する
     user_id, city_id = get_user_id_and_city_id_from_s3_obj(s3_client, ENV['USER_INFO_BUCKET'], s3_object.key)
 

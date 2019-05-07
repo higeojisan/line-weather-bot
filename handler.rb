@@ -31,7 +31,7 @@ def input(event:, context:)
 
   ## 署名の検証
   unless line_bot_client.validate_signature(event['body'], event['headers']['X-Line-Signature'])
-    logger.fatal('failed to validate signature.') 
+    logger.fatal('failed to validate signature.')
     return 0
   end
 
@@ -101,7 +101,7 @@ def input(event:, context:)
       city_id = event['postback']['data']
       user_id = event['source']['userId']
       unless write_user_data_to_s3(user_id, city_id)
-        reply_server_error_message(line_bot_client, event['replyToken']) 
+        reply_server_error_message(line_bot_client, event['replyToken'])
         return
       end
 

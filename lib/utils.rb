@@ -27,22 +27,22 @@ BUTTON_TEMPLATE_HASH = {
 
 def write_user_data_to_s3(user_id, city_id)
   digested_user_id = Digest::SHA256.hexdigest("#{user_id}")
-  temp_file = Tempfile.open {|t|
+  temp_file = Tempfile.open { |t|
     t.puts('user_id,city_id')
     t.puts("#{user_id},#{city_id}")
     t
   }
   s3_client = Aws::S3::Client.new
   s3_client.put_object({
-    body: File.open("#{temp_file.path}"),
-    bucket: "#{ENV['USER_INFO_BUCKET']}",
-    key: "#{digested_user_id}_info.csv",
-  })
+                         body: File.open("#{temp_file.path}"),
+                         bucket: "#{ENV['USER_INFO_BUCKET']}",
+                         key: "#{digested_user_id}_info.csv",
+                       })
   s3_client.get_object(bucket: ENV['USER_INFO_BUCKET'], key: "#{digested_user_id}_info.csv")
 rescue => error
   return false
 end
-  
+
 def get_user_id_and_city_id_from_s3_obj(s3_client = Aws::S3::Client.new, s3_bucket_name = "", s3_object_key = "")
   result = []
   begin
@@ -54,7 +54,7 @@ def get_user_id_and_city_id_from_s3_obj(s3_client = Aws::S3::Client.new, s3_buck
   end
   s3_object_content = resp.body.read
   CSV.parse(s3_object_content, headers: true) do |row|
-    result.push(row['user_id'],row['city_id'])
+    result.push(row['user_id'], row['city_id'])
   end
   result
 end
@@ -111,7 +111,7 @@ def get_xml_from_livedoor_rss()
   url = ENV['LIVEDOOR_PRIMARY_AREA_RSS']
 
   begin
-    xml = open(url, {:redirect => false}) do |f|
+    xml = open(url, { :redirect => false }) do |f|
       charset = f.charset
       f.read
     end
@@ -126,7 +126,7 @@ def get_city_ids_from_livedoor_rss(prefecture)
   citys = []
   xml = Oga.parse_xml(File.read(LIVEDOOR_XML_FILE))
   xml.xpath("/rss/channel/ldWeather:source/pref[contains(@title, '#{prefecture}')]/city").each do |city|
-    citys.push({name: city.get('title'), id: city.get('id')})
+    citys.push({ name: city.get('title'), id: city.get('id') })
   end
   citys
 end
@@ -142,7 +142,7 @@ def get_prefecture_name(user_input)
       prefecture = user_input + '府'
     else
       prefecture = user_input + '県'
-    end 
+    end
   else
     prefecture = user_input
   end
