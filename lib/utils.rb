@@ -89,7 +89,6 @@ def get_weather_info_from_city_id(city_id)
   end
 end
 
-## TODO: temperatureがmin, maxがnilの場合の対応
 def format_weather_info(raw_weather_info)
   forecasts = raw_weather_info['forecasts']
   result = "明日の天気\n\n"
@@ -97,8 +96,8 @@ def format_weather_info(raw_weather_info)
   forecasts.each do |forecast|
     if forecast['dateLabel'] == '明日'
       result += forecast['telop'] + "\n\n"
-      max_temp = forecast['temperature']['max']['celsius']
-      min_temp = forecast['temperature']['min']['celsius']
+      max_temp = forecast['temperature']['max'].nil? ? "取得できませんでした" : forecast['temperature']['max']['celsius']
+      min_temp = forecast['temperature']['min'].nil? ? "取得できませんでした" : forecast['temperature']['min']['celsius']
       result += "最高気温: #{max_temp}" + "\n"
       result += "最低気温: #{min_temp}" + "\n"
       result += "\n" + link
