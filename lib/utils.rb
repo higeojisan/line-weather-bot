@@ -43,10 +43,13 @@ rescue => error
   return false
 end
 
-def get_user_id_and_city_id_from_s3_obj(s3_client = Aws::S3::Client.new, s3_bucket_name = "", s3_object_key = "")
+def get_user_id_and_city_id_from_s3_obj(user_id)
+  digested_user_id = Digest::SHA256.hexdigest(user_id)
+  s3_object_key = digested_user_id + "_info.csv"
   result = []
   begin
-    resp = s3_client.get_object(bucket: s3_bucket_name, key: s3_object_key)
+    s3_client = Aws::S3::Client.new
+    resp = s3_client.get_object(bucket: ENV['USER_INFO_BUCKET'], key: s3_object_key)
   rescue Aws::S3::Errors::NoSuchKey => e
     puts e.message
     puts "#{s3_object_key} does not exist in #{s3_bucket_name}."

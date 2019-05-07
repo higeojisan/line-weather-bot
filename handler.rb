@@ -43,9 +43,8 @@ def input(event:, context:)
       when Line::Bot::Event::MessageType::Text
         case event.message['text']
         when '設定地域の確認'
-          digested_user_id = Digest::SHA256.hexdigest("#{event['source']['userId']}")
-          s3_client = Aws::S3::Client.new
-          user_id, city_id = get_user_id_and_city_id_from_s3_obj(s3_client, ENV['USER_INFO_BUCKET'], "#{digested_user_id}_info.csv")
+          ## ユーザー情報の取得
+          user_id, city_id = get_user_id_and_city_id_from_s3_obj(event['source']['userId'])
           ## ユーザー情報が見つからなかった場合にエラーメッセージを送る
           unless user_id
             message = { type: 'text', text: "設定地域の登録が済んでないようです。\n天気予報を受け取りたい地域の設定を行ってください。" }
