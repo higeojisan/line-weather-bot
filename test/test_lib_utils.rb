@@ -45,4 +45,16 @@ class UtilsTest < Minitest::Test
     ## 異常系(200以外が返ってきた場合)
     assert_empty get_weather_info_from_city_id("9999999999")
   end
+
+  def test_format_prefecture_name
+    assert_equal '東京都', format_prefecture_name('東京')
+    assert_equal '大阪府', format_prefecture_name('大阪')
+    assert_equal '京都府', format_prefecture_name('京都')
+    assert_equal '茨城県', format_prefecture_name('茨城')
+    assert_equal '東京都', format_prefecture_name('東京都')
+    assert_equal '大阪府', format_prefecture_name('大阪府')
+    assert_equal '京都府', format_prefecture_name('京都府')
+    assert_equal '茨城県', format_prefecture_name('茨城県')
+    assert_equal 'あああ', format_prefecture_name('あああ')
+  end
 end
