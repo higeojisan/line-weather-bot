@@ -29,10 +29,6 @@ def weather_info(event:, context:)
     formatted_wether_info = format_weather_info(raw_weather_info).to_s
 
     ## メッセージを送信する
-    message = {
-      type: 'text',
-      text: formatted_wether_info
-    }
-    line_bot_client.push_message(user_id, message)
+    line_bot_client.push_message(user_id, { type: 'text', text: formatted_wether_info })
   end
 end
