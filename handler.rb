@@ -23,12 +23,6 @@ PREFECTURES = %w[
 def input(event:, context:)
   logger = Logger.new(STDOUT)
 
-  ## クライアントの作成
-  line_bot_client = Line::Bot::Client.new { |config|
-    config.channel_secret = ENV['LINE_CHANNEL_SECRET']
-    config.channel_token = ENV['LINE_CHANNEL_TOKEN']
-  }
-
   ## 署名の検証
   unless line_bot_client.validate_signature(event['body'], event['headers']['X-Line-Signature'])
     logger.fatal('failed to validate signature.')

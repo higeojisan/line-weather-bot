@@ -9,12 +9,6 @@ require 'jsonclient'
 require 'utils'
 
 def weather_info(event:, context:)
-  ## クライアントの作成
-  line_bot_client = Line::Bot::Client.new { |config|
-    config.channel_secret = ENV['LINE_CHANNEL_SECRET']
-    config.channel_token = ENV['LINE_CHANNEL_TOKEN']
-  }
-
   ## 設定情報の取得 & メッセージの送信
   s3_client = Aws::S3::Client.new
   list_objects_resp = s3_client.list_objects_v2(bucket: ENV['USER_INFO_BUCKET'])

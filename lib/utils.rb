@@ -166,3 +166,10 @@ def get_city_name_and_pref_name(city_id)
   end
   result
 end
+
+def line_bot_client
+  @line_bot_client ||= Line::Bot::Client.new { |config|
+    config.channel_secret = ENV['LINE_CHANNEL_SECRET']
+    config.channel_token = ENV['LINE_CHANNEL_TOKEN']
+  }
+end
