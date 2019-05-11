@@ -6,7 +6,6 @@ require 'open-uri'
 require 'oga'
 require 'jsonclient'
 
-LIVEDOOR_WEATHER_INFO_URL = 'http://weather.livedoor.com/forecast/webservice/json/v1'
 MAX_ACTION_NUM_FOR_BUTTON_TEMPLATE = 4 ## ボタンテンプレートは最大4アクションまでというLINE Messaging API制限がある
 BUTTON_TEMPLATE_HASH = {
   "type": "template",
@@ -80,33 +79,6 @@ def city_select_template(citys)
       data: "#{city[:id]}",
     }
   end
-end
-
-def get_weather_info_from_city_id(city_id)
-  client = JSONClient.new
-  res = client.get("#{LIVEDOOR_WEATHER_INFO_URL}?city=#{city_id}")
-  if res.status == 200
-    res.body.to_h
-  else
-    {}
-  end
-end
-
-def format_weather_info(raw_weather_info)
-  forecasts = raw_weather_info['forecasts']
-  result = "明日の天気\n\n"
-  link = raw_weather_info['link']
-  forecasts.each do |forecast|
-    if forecast['dateLabel'] == '明日'
-      result += forecast['telop'] + "\n\n"
-      max_temp = forecast['temperature']['max'].nil? ? "取得できませんでした" : forecast['temperature']['max']['celsius']
-      min_temp = forecast['temperature']['min'].nil? ? "取得できませんでした" : forecast['temperature']['min']['celsius']
-      result += "最高気温: #{max_temp}" + "\n"
-      result += "最低気温: #{min_temp}" + "\n"
-      result += "\n" + link
-    end
-  end
-  result
 end
 
 ## 都県府が未入力の場合、都県府を付与する
