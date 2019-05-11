@@ -18,14 +18,6 @@ class UtilsTest < Minitest::Test
     assert_empty city_select_template([])
   end
 
-  def test_get_weather_info_from_city_id
-    ## 正常系(200が返ってきた場合)
-    refute_empty get_weather_info_from_city_id("011000")
-
-    ## 異常系(200以外が返ってきた場合)
-    assert_empty get_weather_info_from_city_id("9999999999")
-  end
-
   def test_format_prefecture_name
     assert_equal '東京都', format_prefecture_name('東京')
     assert_equal '大阪府', format_prefecture_name('大阪')
