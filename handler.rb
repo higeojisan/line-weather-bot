@@ -30,6 +30,8 @@ def input(event:, context:)
     return 0
   end
 
+  livedoor_weather = LivedoorWeather.new
+
   events = line_bot_client.parse_events_from(event['body'])
   events.each { |event|
     case event
@@ -48,7 +50,7 @@ def input(event:, context:)
             return
           end
           if user_id == event['source']['userId']
-            city_name, pref_name = LivedoorWeather.get_city_name_and_pref_name(city_id)
+            city_name, pref_name = livedoor_weather.get_city_name_and_pref_name(city_id)
             message = {
               type: 'text',
               text: "あなたの設定地域は\n#{city_name}(#{pref_name})だよ"
@@ -72,7 +74,7 @@ def input(event:, context:)
 
           prefecture = format_prefecture_name(event.message['text'])
           if PREFECTURES.include?(prefecture)
-            citys = LivedoorWeather.get_city_ids(prefecture)
+            citys = livedoor_weather.get_city_ids(prefecture)
             message = BUTTON_TEMPLATE_HASH
             message[:template][:actions] = city_select_template(citys)
             response = line_bot_client.reply_message(event['replyToken'], message)
