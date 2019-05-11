@@ -7,8 +7,6 @@ require 'oga'
 require 'jsonclient'
 
 LIVEDOOR_WEATHER_INFO_URL = 'http://weather.livedoor.com/forecast/webservice/json/v1'
-LIVEDOOR_JSON_FILE = File.expand_path '../livedoor_data/primary_area.json', File.dirname(__FILE__)
-LIVEDOOR_XML_FILE = File.expand_path '../livedoor_data/primary_area.xml', File.dirname(__FILE__)
 MAX_ACTION_NUM_FOR_BUTTON_TEMPLATE = 4 ## ボタンテンプレートは最大4アクションまでというLINE Messaging API制限がある
 BUTTON_TEMPLATE_HASH = {
   "type": "template",
@@ -111,33 +109,6 @@ def format_weather_info(raw_weather_info)
   result
 end
 
-def get_xml_from_livedoor_rss()
-  logger = Logger.new(STDOUT)
-
-  charset = nil
-  url = ENV['LIVEDOOR_PRIMARY_AREA_RSS']
-
-  begin
-    xml = open(url, { :redirect => false }) do |f|
-      charset = f.charset
-      f.read
-    end
-    xml
-  rescue => e
-    logger.fatal("failed to connect #{url}: #{e.message}")
-    nil
-  end
-end
-
-def get_city_ids_from_livedoor_rss(prefecture)
-  citys = []
-  xml = Oga.parse_xml(File.read(LIVEDOOR_XML_FILE))
-  xml.xpath("/rss/channel/ldWeather:source/pref[contains(@title, '#{prefecture}')]/city").each do |city|
-    citys.push({ name: city.get('title'), id: city.get('id') })
-  end
-  citys
-end
-
 ## 都県府が未入力の場合、都県府を付与する
 ## 都府県名でない場合はそのまま返す
 ## TODO: 都道府県名は限られているのでホワイトリストで厳密にチェックした方が良さそう...
@@ -156,15 +127,6 @@ def format_prefecture_name(user_input)
   else
     prefecture = (user_input == '京都府' || user_input == '京都') ? '京都府' : user_input
   end
-end
-
-def get_city_name_and_pref_name(city_id)
-  result = []
-  File.open(LIVEDOOR_JSON_FILE) do |file|
-    city_hash = JSON.load(file)["#{city_id}"]
-    result << city_hash['city_name'] << city_hash['pref_name'] unless city_hash.nil?
-  end
-  result
 end
 
 def line_bot_client
