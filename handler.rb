@@ -11,6 +11,7 @@ require 'digest/sha2'
 require 'tempfile'
 require 'csv'
 require 'utils'
+require 'livedoor_weather'
 
 PREFECTURES = %w[
   青森県 岩手県 宮城県 秋田県 山形県 福島県 茨城県 栃木県 群馬県
@@ -47,7 +48,7 @@ def input(event:, context:)
             return
           end
           if user_id == event['source']['userId']
-            city_name, pref_name = get_city_name_and_pref_name(city_id)
+            city_name, pref_name = LivedoorWeather.get_city_name_and_pref_name(city_id)
             message = {
               type: 'text',
               text: "あなたの設定地域は\n#{city_name}(#{pref_name})だよ"
@@ -71,7 +72,7 @@ def input(event:, context:)
 
           prefecture = format_prefecture_name(event.message['text'])
           if PREFECTURES.include?(prefecture)
-            citys = get_city_ids_from_livedoor_rss(prefecture)
+            citys = LivedoorWeather.get_city_ids(prefecture)
             message = BUTTON_TEMPLATE_HASH
             message[:template][:actions] = city_select_template(citys)
             response = line_bot_client.reply_message(event['replyToken'], message)
